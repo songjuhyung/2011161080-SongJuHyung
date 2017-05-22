@@ -66,6 +66,7 @@ Server - Unrelitive Server - Client로 구성되며
  3. Sender을 킵니다. (;Client) 
  >- javac sender.java 
  >- java sender  
+   
  ![sender](./sender.PNG)
  
  4. Sender측의 cmd창에서 아무문자열입력 후 엔터 (최대: 1024byte) 
