@@ -8,26 +8,26 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
 class Sender {
-	private final static int DEFAULT_NET_PORT = 9000; //¼¾´õÃø ±âº» Æ÷Æ® ¼³Á¤ 9000À¸·Î 
+	private final static int DEFAULT_NET_PORT = 9000; //ì„¼ë”ì¸¡ ê¸°ë³¸ í¬íŠ¸ ì„¤ì • 9000ìœ¼ë¡œ 
 	public static void main(String[] args) throws Exception {
 		// check if the number of command line argument is 4
 		if (args.length != 1)
 		/*
-			1. ÀÎÀÚ°ªÀ¸·Î port¸¦ ³Ö¾îÁá´ÂÁö¿¡ ´ëÇÑ ¿©ºÎ¸¦ È®ÀÎÇÕ´Ï´Ù.
+			1. ì¸ìê°’ìœ¼ë¡œ portë¥¼ ë„£ì–´ì¤¬ëŠ”ì§€ì— ëŒ€í•œ ì—¬ë¶€ë¥¼ í™•ì¸í•©ë‹ˆë‹¤.
 		*/
-			new Sender("localhost", DEFAULT_NET_PORT);  //¼¾´õÃø¿¡ Æ÷Æ®¸¦ ·ÎÄÃ·Î 
+			new Sender("localhost", DEFAULT_NET_PORT);  //ì„¼ë”ì¸¡ì— í¬íŠ¸ë¥¼ ë¡œì»¬ë¡œ 
 		else
-			new Sender("localhost", Integer.parseInt(args[0])); //java sender Ã¹¹øÂ°°ªÀ» Á¤¼öÇüÀ¸·Î Çüº¯È¯ 
+			new Sender("localhost", Integer.parseInt(args[0])); //java sender ì²«ë²ˆì§¸ê°’ì„ ì •ìˆ˜í˜•ìœ¼ë¡œ í˜•ë³€í™˜ 
 	}
 
 	public Sender(String host, int port) throws Exception {
-		Scanner sc = new Scanner(System.in); //ÀÔ·ÂÇÑ °ªÀ» sc·Î ¸¸µë 
-		while (sc.hasNextLine()) { //scÀÇ ´ÙÀ½ÁÙ¿¡´Â ¹®ÀÚ¿­ lineÀ¸·Î ¸¸µé°í, È£½ºÆ®¿Í Æ÷Æ®¸¦ ±â¹İÀ¸·Î ¸Ş¼¼Áöº¸³¿ 
+		Scanner sc = new Scanner(System.in); //ì…ë ¥í•œ ê°’ì„ scë¡œ ë§Œë“¬ 
+		while (sc.hasNextLine()) { //scì˜ ë‹¤ìŒì¤„ì—ëŠ” ë¬¸ìì—´ lineìœ¼ë¡œ ë§Œë“¤ê³ , í˜¸ìŠ¤íŠ¸ì™€ í¬íŠ¸ë¥¼ ê¸°ë°˜ìœ¼ë¡œ ë©”ì„¸ì§€ë³´ëƒ„ 
 			String line = sc.nextLine();
 			sendMessage(line, host, port);
-			Thread.sleep(20); // Nop ¿ªÇÒ (NO operation)
+			Thread.sleep(20); // Nop ì—­í•  (NO operation)
 			/*
-				2. ÀÌ ºÎºĞµµ ÀÎÅÍ³İ Áö¿¬ Çö»óÀ» ¹æÁöÇÏ±â À§ÇÔÀÔ´Ï´Ù.
+				2. ì´ ë¶€ë¶„ë„ ì¸í„°ë„· ì§€ì—° í˜„ìƒì„ ë°©ì§€í•˜ê¸° ìœ„í•¨ì…ë‹ˆë‹¤.
 			*/
 		}
 	}
@@ -37,59 +37,59 @@ class Sender {
 	public void sendMessage(String message, String host, int port) throws Exception {
 
 		/* Sending */
-		InetAddress senderAddress = InetAddress.getByName(host); //È£½ºÆ®¿¡¼­ ÀÌ¸§À» °¡Á®¿È ipÁÖ¼Ò 
-		DatagramSocket sender = new DatagramSocket(); // µ¥ÀÌÅÍ±×·¥ ¼ÒÄÏ ¸¸µë
-		sender.setSoTimeout(500); //500¸¸Å­ Timeout ½Ã°£À» ¼³Á¤ (½Ã°£ ÃÖ´ë ±æÀÌ ¼³Á¤)	
+		InetAddress senderAddress = InetAddress.getByName(host); //í˜¸ìŠ¤íŠ¸ì—ì„œ ì´ë¦„ì„ ê°€ì ¸ì˜´ ipì£¼ì†Œ 
+		DatagramSocket sender = new DatagramSocket(); // ë°ì´í„°ê·¸ë¨ ì†Œì¼“ ë§Œë“¬
+		sender.setSoTimeout(500); //500ë§Œí¼ Timeout ì‹œê°„ì„ ì„¤ì • (ì‹œê°„ ìµœëŒ€ ê¸¸ì´ ì„¤ì •)	
 		while (true) {
 			long sendChecksum = getchecksum((seq + ";" + message).getBytes()); 
 			/*
-				3. Áß¿äÇÑ ºÎºĞÀÔ´Ï´Ù. packet¿¡ checksumÀ» Æ÷ÇÔÇÏ¿© º¸³¿À¸·Î¼­ receiver°¡ ¹ŞÀº message¿Í checksumÀ» ºñ±³ÇÏ¿© Á¤»óÀûÀÎ ÆĞÅ¶ÀÎÁö È®ÀÎÇÒ ¼ö ÀÖµµ·Ï ÇØÁİ´Ï´Ù.
+				3. ì¤‘ìš”í•œ ë¶€ë¶„ì…ë‹ˆë‹¤. packetì— checksumì„ í¬í•¨í•˜ì—¬ ë³´ëƒ„ìœ¼ë¡œì„œ receiverê°€ ë°›ì€ messageì™€ checksumì„ ë¹„êµí•˜ì—¬ ì •ìƒì ì¸ íŒ¨í‚·ì¸ì§€ í™•ì¸í•  ìˆ˜ ìˆë„ë¡ í•´ì¤ë‹ˆë‹¤.
 			*/
-			String packet = makePacket(sendChecksum, seq, message); // Ã½¼¶°ª, ½ÃÄö½º, ¸Ş¼¼Áö¸¦ ±â¹İÀ¸·Î ÆĞÅ¶À» ¸¸µë 
+			String packet = makePacket(sendChecksum, seq, message); // ì²µì„¬ê°’, ì‹œí€€ìŠ¤, ë©”ì„¸ì§€ë¥¼ ê¸°ë°˜ìœ¼ë¡œ íŒ¨í‚·ì„ ë§Œë“¬ 
 
-			byte[] sendData = packet.getBytes(); //ÆĞÅ¶ÀÇ ¹ÙÀÌÆ®¸¦ ¾ò¾î¿È 
+			byte[] sendData = packet.getBytes(); //íŒ¨í‚·ì˜ ë°”ì´íŠ¸ë¥¼ ì–»ì–´ì˜´ 
 
-			DatagramPacket sendPkt = new DatagramPacket(sendData, sendData.length, senderAddress, port); // ¼Û½ÅÃø µ¥ÀÌÅÍ ,±æÀÌ, ÁÖ¼Ò, Æ÷Æ®·Î µ¥ÀÌÅÍ±×·¥ ÆĞÅ¶À» ¸¸µë (¼Û½ÅÆĞÅ¶)
-			sender.send(sendPkt); //¼Û½ÅÆĞÅ¶ º¸³¿ 
+			DatagramPacket sendPkt = new DatagramPacket(sendData, sendData.length, senderAddress, port); // ì†¡ì‹ ì¸¡ ë°ì´í„° ,ê¸¸ì´, ì£¼ì†Œ, í¬íŠ¸ë¡œ ë°ì´í„°ê·¸ë¨ íŒ¨í‚·ì„ ë§Œë“¬ (ì†¡ì‹ íŒ¨í‚·)
+			sender.send(sendPkt); //ì†¡ì‹ íŒ¨í‚· ë³´ëƒ„ 
 
 			/* Receiving */
-			byte[] inBuffer = new byte[1024]; //1024Å©±âÀÇ ¹öÆÛ¸¦ ¸¸µë
-			DatagramPacket rcvedPkt = new DatagramPacket(inBuffer, inBuffer.length); //¹öÆÛ¿Í ¹öÆÛ±æÀÌ·Î µ¥ÀÌÅÍ±×·¥ ÆĞÅ¶ (¼ö½ÅÃø ¸¸µë)
+			byte[] inBuffer = new byte[1024]; //1024í¬ê¸°ì˜ ë²„í¼ë¥¼ ë§Œë“¬
+			DatagramPacket rcvedPkt = new DatagramPacket(inBuffer, inBuffer.length); //ë²„í¼ì™€ ë²„í¼ê¸¸ì´ë¡œ ë°ì´í„°ê·¸ë¨ íŒ¨í‚· (ìˆ˜ì‹ ì¸¡ ë§Œë“¬)
 
 			try {
-				sender.receive(rcvedPkt); // ¼ö½ÅÃø ÆĞÅ¶ ¹ŞÀ½
-			} catch (SocketTimeoutException e) { // ½Ã°£ÃÊ°úÇÏ¸é  ´ÙÀ½¼ø¼­·Î ³Ñ±è ¾Æ¸¶ À§¿¡¼­¼³Á¤ÇÑ 500ÀÇ °ªÀÎµí.
+				sender.receive(rcvedPkt); // ìˆ˜ì‹ ì¸¡ íŒ¨í‚· ë°›ìŒ
+			} catch (SocketTimeoutException e) { 
 				continue;
 			}
 
-			String rcvedData = new String(rcvedPkt.getData(), 0, rcvedPkt.getLength()); //¼ö½ÅÆĞÅ¶ µ¥ÀÌÅÍ¿Í ±æÀÌ ¾ò¾î¼­ µ¥ÀÌÅÍ±×·¥À¸·Î ¸¸µë 
+			String rcvedData = new String(rcvedPkt.getData(), 0, rcvedPkt.getLength()); //ìˆ˜ì‹ íŒ¨í‚· ë°ì´í„°ì™€ ê¸¸ì´ ì–»ì–´ì„œ ë°ì´í„°ê·¸ë¨ìœ¼ë¡œ ë§Œë“¬ 
 
 			// Received packet's checksum
-			if (rcvedData.equals("" + this.seq)) { //¼ø¼­°¡ µ¿µîÇÑÁö ºñ±³ÇÏ°í, ºñ±³ÇÏ´Ù¸é ¼ø¼­¸¦ 1°³ ´Ã¸² ±×¸®°í ¼Û½ÅÆĞÅ¶ ³¡³¿ 
+			if (rcvedData.equals("" + this.seq)) { //ìˆœì„œê°€ ë™ë“±í•œì§€ ë¹„êµí•˜ê³ , ë¹„êµí•˜ë‹¤ë©´ ìˆœì„œë¥¼ 1ê°œ ëŠ˜ë¦¼ ê·¸ë¦¬ê³  ì†¡ì‹ íŒ¨í‚· ëëƒ„ 
 				//System.out.println("ACK" + rcvedData);
 				this.seq++;
 				sender.close();
 				break;
-			} else { //±×·¸Áö¾ÊÀ¸¸é ¼ö½ÅÃø¿¡¼­ ´ÙÀ½À¸·Î ³Ñ±è 
+			} else { //ê·¸ë ‡ì§€ì•Šìœ¼ë©´ ìˆ˜ì‹ ì¸¡ì—ì„œ ë‹¤ìŒìœ¼ë¡œ ë„˜ê¹€ 
 				//System.out.println("ACK" + rcvedData);
 				continue;
 			}
 		}
 	}
 
-	private String makePacket(long checksum, int seq, String message) { // ÆĞÅ¶¸¸µë Ã½¼¶ ,¼ø¼­ ,¸Ş¼¼Áö 
-		return checksum + ";" + seq + ";" + message; // Ã½¼¶, seq , ¸Ş¼¼Áö ¹İÈ¯ 
+	private String makePacket(long checksum, int seq, String message) { // íŒ¨í‚·ë§Œë“¬ ì²µì„¬ ,ìˆœì„œ ,ë©”ì„¸ì§€ 
+		return checksum + ";" + seq + ";" + message; // ì²µì„¬, seq , ë©”ì„¸ì§€ ë°˜í™˜ 
 	}
 
-	// Calculate checksum for checking corrupted packet ÈÑ¼ÕµÈ ÆĞÅ¶À» °Ë»çÇÏ±âÀ§ÇÑ Ã½¼¶ °è»ê 
-	public long getchecksum(byte[] sendData) { //¼Û½Åµ¥ÀÌÅÍ ²ø¾î¿È
+	// Calculate checksum for checking corrupted packet í›¼ì†ëœ íŒ¨í‚·ì„ ê²€ì‚¬í•˜ê¸°ìœ„í•œ ì²µì„¬ ê³„ì‚° 
+	public long getchecksum(byte[] sendData) { //ì†¡ì‹ ë°ì´í„° ëŒì–´ì˜´
 		long sum = 0; 
 		ByteArrayInputStream bais = new ByteArrayInputStream(sendData);
 		CheckedInputStream cis = new CheckedInputStream(bais, new Adler32()); 
-		byte readBuffer[] = new byte[5]; //¹è¿­ 5Å©±â·Î ¼³Á¤ 
+		byte readBuffer[] = new byte[5]; //ë°°ì—´ 5í¬ê¸°ë¡œ ì„¤ì • 
 		try {
-			while (cis.read(readBuffer) >= 0) { // ÀĞÀº¹öÆÛ°¡ 0º¸´Ù Å©´Ù¸é 
-				long value = cis.getChecksum().getValue(); //Ã½¼¶ÀÇ °ªÀ» value ·Î Áı¾î³ÖÀ½
+			while (cis.read(readBuffer) >= 0) { // ì½ì€ë²„í¼ê°€ 0ë³´ë‹¤ í¬ë‹¤ë©´ 
+				long value = cis.getChecksum().getValue(); //ì²µì„¬ì˜ ê°’ì„ value ë¡œ ì§‘ì–´ë„£ìŒ
 				// System.out.println("The value of checksum is " + value);
 				sum += value;
 			}
